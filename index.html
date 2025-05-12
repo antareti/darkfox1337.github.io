@@ -60,6 +60,7 @@
   </style>
 </head>
 <body>
+  <canvas id="starCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
   <div class="container">
     <header>
       <img src="logo.png" alt="HACKPACK Logo" class="logo" />
@@ -75,8 +76,22 @@
 
     <main>
       <section id="about">
+        <h2 style="color:lime;">▶ Видео с проекта</h2>
+        <video controls width="100%" style="border: 2px solid lime;">
+          <source src="video.mp4" type="video/mp4">
+          Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+
         <h2>О нас</h2>
         <p>Добро пожаловать на официальный сайт команды HACKPACK. Здесь публикуются наши проекты, эксперименты и хаки.</p>
+
+        <h2 style="color:lime;">⬇ Скачать архив</h2>
+        <a href="NESCA_4.rar" download style="color:lime; font-size:18px;">
+          📁 Скачать NESCA_4.rar
+        </a>
+
+        <h2 style="color:lime;">🌐 Ваш IP-адрес</h2>
+        <p id="ip-info">Загрузка...</p>
       </section>
 
       <section id="projects">
@@ -87,11 +102,98 @@
           <li>🧠 AI Nude Character Generator</li>
         </ul>
       </section>
+
+      <section id="donate" style="text-align:center; margin-top: 40px;">
+        <h2 style="color: #00ff00; font-family: monospace;">💸 Поддержи проект HACKPACK</h2>
+        <a href="https://boosty.to/hackpack1977/donate" target="_blank">
+          <button style="background-color:#ff8c00;color:#fff;padding:12px 24px;font-size:16px;border:none;border-radius:8px;cursor:pointer;">
+            Перейти на Boosty
+          </button>
+        </a>
+      </section>
     </main>
 
     <footer>
       <p>&copy; 2025 HACKPACK | <a href="https://t.me/vipcam1977" target="_blank">Связаться через Telegram</a></p>
     </footer>
   </div>
+
+  <!-- IP Fetch -->
+  <script>
+    fetch('https://ipwho.is/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('ip-info').textContent =
+            `IP: ${data.ip} | Город: ${data.city}, ${data.country}`;
+        } else {
+          document.getElementById('ip-info').textContent = 'Не удалось определить IP.';
+        }
+      })
+      .catch(() => {
+        document.getElementById('ip-info').textContent = 'Ошибка при получении данных.';
+      });
+  </script>
+
+  <!-- Stars Animation -->
+  <script>
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const stars = [];
+    for (let i = 0; i < 300; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() < 0.1 ? 2 + Math.random() * 2 : 0.5 + Math.random() * 1,
+        alpha: Math.random(),
+        delta: Math.random() * 0.02
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 0, ${star.alpha})`;
+        ctx.fill();
+        star.alpha += star.delta;
+        if (star.alpha <= 0 || star.alpha >= 1) {
+          star.delta = -star.delta;
+        }
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    drawStars();
+  </script>
+
+  <!-- IP Logging -->
+  <script>
+    fetch('log_ip.php')
+      .then(response => response.text())
+      .then(data => console.log('IP Logged:', data));
+  </script>
+
+  <!-- Tawk.to Live Chat -->
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/6821006a112db0190bc0b42b/1ir0ej8lj';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
 </body>
 </html>
