@@ -195,5 +195,23 @@
       s0.parentNode.insertBefore(s1, s0);
     })();
   </script>
-</body>
+</body><div id="login" style="text-align:center; margin-top: 20vh;">
+  <h2 style="color: #0f0;">Введите пароль для доступа</h2>
+  <input type="password" id="password" placeholder="Пароль" style="padding:10px; font-size:16px;">
+  <button onclick="checkPassword()" style="padding:10px; font-size:16px;">Войти</button>
+  <p id="message" style="color: red;"></p>
+</div>
+
+<script>
+  function checkPassword() {
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+    if (password === "hackpack1977") {
+      document.body.innerHTML = '<img src="anal.png" style="display:block; margin: 0 auto; max-width:90vw; max-height:90vh;">';
+    } else {
+      message.textContent = "Неверный пароль!";
+    }
+  }
+</script>
+
 </html>
