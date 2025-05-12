@@ -256,6 +256,13 @@
 <body>
   <h1>Добро пожаловать в систему HACKPACK</h1>
   <img src="1Lli.gif" alt="GIF">
-</body>
+</body><script>
+  document.addEventListener('click', () => {
+    const audio = new Audio('rom.mp3');
+    audio.loop = true;
+    audio.play();
+  }, { once: true });
+</script>
+
 </html>
 
