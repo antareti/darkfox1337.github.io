@@ -57,17 +57,13 @@
       font-size: 0.9em;
       color: #00aa00;
     }
-    #login {
-      text-align: center;
-      margin-top: 20vh;
-    }
   </style>
 </head>
 <body>
   <canvas id="starCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
   <div class="container">
     <header>
-      <img src="logo.png" alt="HACKPACK Logo" class="logo" />
+      <img src="logo.gif" alt="HACKPACK Logo" class="logo" />
       <h1>HACKPACK</h1>
       <p class="tagline">Хакерские проекты и эксперименты</p>
     </header>
@@ -121,28 +117,6 @@
       <p>&copy; 2025 HACKPACK | <a href="https://t.me/vipcam1977" target="_blank">Связаться через Telegram</a></p>
     </footer>
   </div>
-
-  <div id="login">
-    <h2 style="color: #0f0;">Введите пароль для доступа</h2>
-    <input type="password" id="password" placeholder="Пароль" style="padding:10px; font-size:16px;">
-    <button onclick="checkPassword()" style="padding:10px; font-size:16px;">Войти</button>
-  </div>
-
-  <!-- Скрипт проверки пароля -->
-  <script>
-    function checkPassword() {
-      const password = document.getElementById('password').value;
-      if (password === 'hackpack1337') {
-        alert("Доступ разрешён!");
-        document.getElementById('login').style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
-      } else {
-        alert("Неверный пароль!");
-      }
-    }
-    // По умолчанию скрываем основной контент
-    document.querySelector('.container').style.display = 'none';
-  </script>
 
   <!-- IP Fetch -->
   <script>
