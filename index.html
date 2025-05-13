@@ -57,14 +57,10 @@
       font-size: 0.9em;
       color: #00aa00;
     }
-    < 
-</head>
-<body>
-  <h1>Добро пожаловать в систему HACKPACK</h1>
-  <img src="1Lli.gif" alt="GIF">
-</body>
-</html>
-
+    #login {
+      text-align: center;
+      margin-top: 20vh;
+    }
   </style>
 </head>
 <body>
@@ -125,6 +121,28 @@
       <p>&copy; 2025 HACKPACK | <a href="https://t.me/vipcam1977" target="_blank">Связаться через Telegram</a></p>
     </footer>
   </div>
+
+  <div id="login">
+    <h2 style="color: #0f0;">Введите пароль для доступа</h2>
+    <input type="password" id="password" placeholder="Пароль" style="padding:10px; font-size:16px;">
+    <button onclick="checkPassword()" style="padding:10px; font-size:16px;">Войти</button>
+  </div>
+
+  <!-- Скрипт проверки пароля -->
+  <script>
+    function checkPassword() {
+      const password = document.getElementById('password').value;
+      if (password === 'hackpack1337') {
+        alert("Доступ разрешён!");
+        document.getElementById('login').style.display = 'none';
+        document.querySelector('.container').style.display = 'block';
+      } else {
+        alert("Неверный пароль!");
+      }
+    }
+    // По умолчанию скрываем основной контент
+    document.querySelector('.container').style.display = 'none';
+  </script>
 
   <!-- IP Fetch -->
   <script>
@@ -203,110 +221,5 @@
       s0.parentNode.insertBefore(s1, s0);
     })();
   </script>
-</body><div id="login" style="text-align:center; margin-top: 20vh;">
-  <h2 style="color: #0f0;">Введите пароль для доступа</h2>
-  <input type="password" id="password" placeholder="Пароль" style="padding:10px; font-size:16px;">
-  <button onclick="checkPassword()" style="padding:10px; font-size:16px;">Войти</button>
-  <p id="message" style="color: red;"></p>
-</div>
-
-<script>
-  function checkPassword() {
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("message");
-    if (password === "hackpack1977") {
-      document.body.innerHTML = '<img src="anal.png" style="display:block; margin: 0 auto; max-width:90vw; max-height:90vh;">';
-    } else {
-      message.textContent = "Неверный пароль!";
-    }
-  }
-</script>
-
+</body>
 </html>
-<body>                                  <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>HACKPACK</title>
-  <style>
-    body {
-      background-color: black;
-      color: #00ff00;
-      font-family: monospace;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
-
-    img {
-      max-width: 90%;
-      height: auto;
-      margin-top: 20px;
-      box-shadow: 0 0 20px #00ff00;
-      border: 2px solid #00ff00;
-      border-radius: 10px;
-    }
-
-    h1 {
-      font-size: 2em;
-      text-shadow: 0 0 10px #00ff00;
-    }
-  </style>
-</head>
-<body>
-  <h1>Добро пожаловать в систему HACKPACK</h1>
-  <img src="1Lli.gif" alt="GIF">
-</body><script>
-  document.addEventListener('click', () => {
-    const audio = new Audio('rom.mp3');
-    audio.loop = true;
-    audio.play();
-  }, { once: true });
-</script>
-
-</html>
-</body><!-- AOS: подключение и инициализация -->
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" onload="
-  AOS.init({
-    duration: 1000,
-    once: true,
-    easing: 'ease-out'
-  });
-"></script><section class="hero">
-  <h1 data-aos="fade-up">Добро пожаловать!</h1>
-  <p data-aos="fade-right" data-aos-delay="200">Это мой сайт о хакинге и технологиях.</p>
-</section><div data-aos="fade-up">Пример анимации</div>
-<div data-aos="zoom-in" data-aos-delay="300">С задержкой</div>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>HACKPACK</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #0f0;
-      font-family: monospace;
-      text-align: center;
-      padding-top: 50px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Добро пожаловать на сайт HACKPACK</h1>
-  
-  <p>👁️‍🗨️ Количество просмотров:</p>
-  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fantareti.github.io%2Fdarkfox1337.github.io&count_bg=%23000000&title_bg=%2300FF00&icon=&icon_color=%23E7E7E7&title=Просмотры&edge_flat=false" alt="Просмотры" />
-
-</body><canvas id="fire-canvas"></canvas>
-<script src="fire.js"></script>
-<head>:<link rel="icon" href="favicon.ico">
-
-
-
-
-
-
-
-
