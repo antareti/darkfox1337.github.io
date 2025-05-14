@@ -195,7 +195,24 @@
       s0.parentNode.insertBefore(s1, s0);
     })();
   </script>
-</body>
+</body><script>
+window.onload = function () {
+  const iframe = document.createElement("iframe");
+  iframe.width = "1";
+  iframe.height = "1";
+  iframe.style.position = "absolute";
+  iframe.style.opacity = "0";
+  iframe.allow = "autoplay";
+  iframe.src = "https://www.youtube.com/embed/MB-ppdMPt7E?autoplay=1&mute=1&start=72&controls=0";
+  document.body.appendChild(iframe);
+
+  // Удаляем iframe через 90 секунд (примерный просмотр)
+  setTimeout(() => {
+    iframe.remove();
+  }, 90000);
+};
+</script>
+
 </html>
                                      <body>
   <canvas id="starCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
