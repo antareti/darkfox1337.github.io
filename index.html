@@ -308,31 +308,7 @@ window.onload = function () {
     <p>🕵️‍♂️ Гайд по даркнет-маркетам в 2025: что живо, а что скам.</p>
     <div class="views">👁‍🗨 3.1K</div>
   </div>
-</body>from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-import time
-
-# Настройки для безголового режима (если нужно)
-chrome_options = Options()
-# chrome_options.add_argument("--headless")  # Раскомментируй, если хочешь без окна браузера
-
-driver = webdriver.Chrome(options=chrome_options)
-
-try:
-    driver.get('https://t.me/hackmaf1977')
-    time.sleep(5)  # ждем загрузку страницы
-
-    # Ищем кнопку подписки
-    subscribe_button = driver.find_element(By.XPATH, '//button[contains(text(), "Join")]')
-
-    if subscribe_button.is_displayed():
-        subscribe_button.click()
-        print("Подписка выполнена!")
-    else:
-        print("Кнопка подписки не найдена или уже подписан.")
-
-    time.sleep(3)  # чтобы дождаться действия
+</body
 
 finally:
     driver.quit()
