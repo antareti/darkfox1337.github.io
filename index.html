@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
+    /* Твои стили остаются без изменений */
     * {
       box-sizing: border-box;
     }
@@ -139,33 +140,27 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const size = parseFloat(document.getElementById('size').value);
-      const type = document.getElementById('type').value;
-      const condition = document.getElementById('condition').value;
-      const year = parseInt(document.getElementById('year').value);
+    // Загружаем цены по районам из локального JSON файла (создай файл prices.json рядом с этим html)
+    let districtPrices = {};
 
-      let basePricePerSqM = 1200;
-      if (type === 'house') basePricePerSqM = 1000;
-      if (condition === 'renovated') basePricePerSqM += 200;
-      if (year && year > 2015) basePricePerSqM += 100;
-      if (year && year < 1980) basePricePerSqM -= 150;
+    fetch('prices.json')
+      .then(response => response.json())
+      .then(data => {
+        districtPrices = data;
+        console.log('Цены по районам загружены', districtPrices);
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки данных цен:', err);
+      });
 
-      const estimate = size * basePricePerSqM;
-
-      document.getElementById('result').textContent =
-        `Estimated Property Value: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
-    });
-
-    // Leaflet map init
-    const map = L.map('map').setView([41.7151, 44.8271], 12); // Tbilisi coords
+    // Инициализация Leaflet карты
+    const map = L.map('map').setView([41.7151, 44.8271], 12); // Координаты Тбилиси
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Example placeholder GeoJSON district (you should replace this with real GeoJSON)
-    const districtLayer = L.geoJSON({
+    // Пример GeoJSON с районами (замени на реальные данные)
+    const districtsGeoJSON = {
       "type": "FeatureCollection",
       "features": [
         {
@@ -175,21 +170,72 @@
             "type": "Polygon",
             "coordinates": [[[44.776, 41.715], [44.782, 41.715], [44.782, 41.720], [44.776, 41.720], [44.776, 41.715]]]
           }
+        },
+        {
+          "type": "Feature",
+          "properties": {"name": "Saburtalo"},
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[44.810, 41.720], [44.820, 41.720], [44.820, 41.730], [44.810, 41.730], [44.810, 41.720]]]
+          }
         }
+        // Добавь остальные районы по аналогии
       ]
-    }, {
+    };
+
+    // Добавляем районы на карту с кликом для выбора района в форме
+    L.geoJSON(districtsGeoJSON, {
+      style: {
+        color: '#0ff',
+        weight: 2,
+        fillOpacity: 0.2
+      },
       onEachFeature: function (feature, layer) {
         layer.on('click', function () {
-          document.getElementById('district').value = feature.properties.name;
-        });
-        layer.bindPopup(feature.properties.name);
-        layer.setStyle({
-          color: '#0ff',
-          weight: 2,
-          fillOpacity: 0.2
+          const districtName = feature.properties.name;
+          document.getElementById('district').value = districtName;
+          // Опционально можно показать попап с ценой
+          const priceInfo = districtPrices[districtName];
+          if(priceInfo){
+            layer.bindPopup(`${districtName}<br>Цена кв.м.:<br>Квартира: $${priceInfo.apartment}<br>Дом: $${priceInfo.house}`).openPopup();
+          } else {
+            layer.bindPopup(`${districtName}<br>Данные о ценах отсутствуют`).openPopup();
+          }
         });
       }
     }).addTo(map);
+
+    // Обработка отправки формы с учётом данных из JSON
+    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const district = document.getElementById('district').value.trim();
+      const size = parseFloat(document.getElementById('size').value);
+      const type = document.getElementById('type').value;
+      const condition = document.getElementById('condition').value;
+      const year = parseInt(document.getElementById('year').value);
+
+      if (!districtPrices[district]) {
+        document.getElementById('result').textContent = "❌ Данные по району отсутствуют.";
+        return;
+      }
+
+      let basePricePerSqM = districtPrices[district][type];
+      if (!basePricePerSqM) {
+        document.getElementById('result').textContent = "❌ Данные по типу недвижимости отсутствуют.";
+        return;
+      }
+
+      // Корректировки цены
+      if (condition === 'renovated') basePricePerSqM += 200;
+      if (year && year > 2015) basePricePerSqM += 100;
+      if (year && year < 1980) basePricePerSqM -= 150;
+
+      const estimate = size * basePricePerSqM;
+
+      document.getElementById('result').textContent =
+        `🏡 Оценочная стоимость: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+    });
   </script>
 </body>
 </html>
