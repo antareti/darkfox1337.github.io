@@ -1,316 +1,117 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HACKPACK</title>
-  <style>
-    body {
-      background-color: #000000;
-      color: #00ff00;
-      font-family: "Courier New", Courier, monospace;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .logo {
-      width: 200px;
-      display: block;
-      margin: 0 auto;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .tagline {
-      font-size: 1.2em;
-      color: #00cc00;
-    }
-    nav {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    nav a {
-      color: #00ff00;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #00cc00;
-      text-shadow: 0 0 10px #00ff00;
-    }
-    h1, h2 {
-      color: #00ff00;
-    }
-    ul {
-      list-style-type: square;
-      padding-left: 20px;
-    }
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #00aa00;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="starCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
-  <div class="container">
-    <header>
-      <img src="logo.gif" alt="HACKPACK Logo" class="logo" />
-      <h1>HACKPACK</h1>
-      <p class="tagline">Хакерские проекты и эксперименты</p>
-    </header>
-
-    <nav>
-      <a href="#about">О нас</a>
-      <a href="#projects">Проекты</a>
-      <a href="https://t.me/vipcam1977" target="_blank">Telegram</a>
-    </nav>
-
-    <main>
-      <section id="about">
-        <h2 style="color:lime;">▶ Видео с проекта</h2>
-        <video controls width="100%" style="border: 2px solid lime;">
-          <source src="video.mp4" type="video/mp4">
-          Ваш браузер не поддерживает воспроизведение видео.
-        </video>
-
-        <h2>О нас</h2>
-        <p>Добро пожаловать на официальный сайт команды HACKPACK. Здесь публикуются наши проекты, эксперименты и хаки.</p>
-
-        <h2 style="color:lime;">⬇ Скачать архив</h2>
-        <a href="NESCA_4.rar" download style="color:lime; font-size:18px;">
-          📁 Скачать NESCA_4.rar
-        </a>
-
-        <h2 style="color:lime;">🌐 Ваш IP-адрес</h2>
-        <p id="ip-info">Загрузка...</p>
-      </section>
-
-      <section id="projects">
-        <h2>Проекты</h2>
-        <ul>
-          <li>🔓 YouTube Views Bot</li>
-          <li>💣 Telegram Goblin Miner Game</li>
-          <li>🧠 AI Nude Character Generator</li>
-        </ul>
-      </section>
-
-      <section id="donate" style="text-align:center; margin-top: 40px;">
-        <h2 style="color: #00ff00; font-family: monospace;">💸 Поддержи проект HACKPACK</h2>
-        <a href="https://boosty.to/hackpack1977/donate" target="_blank">
-          <button style="background-color:#ff8c00;color:#fff;padding:12px 24px;font-size:16px;border:none;border-radius:8px;cursor:pointer;">
-            Перейти на Boosty
-          </button>
-        </a>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2025 HACKPACK | <a href="https://t.me/vipcam1977" target="_blank">Связаться через Telegram</a></p>
-    </footer>
-  </div>
-
-  <!-- IP Fetch -->
-  <script>
-    fetch('https://ipwho.is/')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById('ip-info').textContent =
-            `IP: ${data.ip} | Город: ${data.city}, ${data.country}`;
-        } else {
-          document.getElementById('ip-info').textContent = 'Не удалось определить IP.';
-        }
-      })
-      .catch(() => {
-        document.getElementById('ip-info').textContent = 'Ошибка при получении данных.';
-      });
-  </script>
-
-  <!-- Stars Animation -->
-  <script>
-    const canvas = document.getElementById('starCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const stars = [];
-    for (let i = 0; i < 300; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() < 0.1 ? 2 + Math.random() * 2 : 0.5 + Math.random() * 1,
-        alpha: Math.random(),
-        delta: Math.random() * 0.02
-      });
-    }
-
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 255, 0, ${star.alpha})`;
-        ctx.fill();
-        star.alpha += star.delta;
-        if (star.alpha <= 0 || star.alpha >= 1) {
-          star.delta = -star.delta;
-        }
-      }
-      requestAnimationFrame(drawStars);
-    }
-
-    drawStars();
-  </script>
-
-  <!-- IP Logging -->
-  <script>
-    fetch('log_ip.php')
-      .then(response => response.text())
-      .then(data => console.log('IP Logged:', data));
-  </script>
-
-  <!-- Tawk.to Live Chat -->
-  <script type="text/javascript">
-    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-    (function () {
-      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-      s1.async = true;
-      s1.src = 'https://embed.tawk.to/6821006a112db0190bc0b42b/1ir0ej8lj';
-      s1.charset = 'UTF-8';
-      s1.setAttribute('crossorigin', '*');
-      s0.parentNode.insertBefore(s1, s0);
-    })();
-  </script>
-</body><script>
-window.onload = function () {
-  const iframe = document.createElement("iframe");
-  iframe.width = "1";
-  iframe.height = "1";
-  iframe.style.position = "absolute";
-  iframe.style.opacity = "0";
-  iframe.allow = "autoplay";
-  iframe.src = "https://www.youtube.com/embed/MB-ppdMPt7E?autoplay=1&mute=1&start=72&controls=0";
-  document.body.appendChild(iframe);
-
-  // Удаляем iframe через 90 секунд (примерный просмотр)
-  setTimeout(() => {
-    iframe.remove();
-  }, 90000);
-};
-</script>
-
-</html>
-                                     <body>
-  <canvas id="starCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
-  <div class="container">
-    <header>
-      <img src="logo.png" alt="HACKPACK Logo" class="logo" />
-      <h1>HACKPACK</h1>
-      <p class="tagline">Хакерские проекты и эксперименты</p>
-      <!-- Вернули гифку -->
-      <img src="1Lli.gif" alt="GIF" style="margin-top: 20px;" />
-    </header>
-    <body><!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>КиберБаза 🛠 by HackPack</title>
+  <title>Smart Property Estimator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #e0e0e0;
+      background: #f7f9fc;
       margin: 0;
       padding: 0;
+      color: #333;
     }
-    .header {
-      background-color: #1c1c1c;
-      padding: 20px;
-      display: flex;
-      align-items: center;
+    header {
+      background: #003366;
+      color: white;
+      padding: 1em;
+      text-align: center;
     }
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-right: 20px;
-      border: 2px solid #00ffc8;
+    main {
+      max-width: 600px;
+      margin: 2em auto;
+      padding: 1em;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .info {
-      display: flex;
-      flex-direction: column;
+    label {
+      display: block;
+      margin-top: 1em;
     }
-    .info h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #00ffc8;
+    input, select {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.25em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    .info p {
-      margin: 5px 0 0;
-      font-size: 16px;
-      color: #aaaaaa;
+    button {
+      margin-top: 1.5em;
+      padding: 0.75em;
+      width: 100%;
+      background: #0055aa;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
     }
-    .subs {
-      margin-top: 5px;
-      font-size: 14px;
-      color: #888888;
+    .result {
+      margin-top: 2em;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0055aa;
     }
-    .post {
-      background-color: #191919;
-      margin: 10px;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #2a2a2a;
-    }
-    .views {
-      text-align: right;
-      font-size: 12px;
+    footer {
+      text-align: center;
+      margin-top: 2em;
+      padding: 1em;
+      font-size: 0.9em;
       color: #666;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="avatar.jpg" alt="Avatar" class="avatar">
-    <div class="info">
-      <h1>КиберБаза 🛠 by HackPack</h1>
-      <p>🔐 Сливы • Базы данных • Хакинг • Дарквеб</p>
-      <span class="subs">12 544 подписчика</span>
-    </div>
-  </div>
+  <header>
+    <h1>Smart Property Estimator</h1>
+  </header>
+  <main>
+    <form id="estimatorForm">
+      <label>City:<input type="text" id="city" required></label>
+      <label>District:<input type="text" id="district" required></label>
+      <label>Property Type:
+        <select id="type">
+          <option value="apartment">Apartment</option>
+          <option value="house">House</option>
+        </select>
+      </label>
+      <label>Size (m²):<input type="number" id="size" required></label>
+      <label>Floor:<input type="number" id="floor"></label>
+      <label>Year Built:<input type="number" id="year"></label>
+      <label>Condition:
+        <select id="condition">
+          <option value="renovated">Renovated</option>
+          <option value="not-renovated">Not Renovated</option>
+        </select>
+      </label>
+      <button type="submit">Estimate Value</button>
+    </form>
+    <div class="result" id="result"></div>
+  </main>
+  <footer>
+    &copy; 2025 Smart Property Estimator. All rights reserved.
+  </footer>
 
-  <div class="post">
-    <p>🔥 Эксклюзивный слив — 500K .RU email:pass + телефоны! Бесплатно только 24 часа!</p>
-    <div class="views">👁‍🗨 8.4K</div>
-  </div>
+  <script>
+    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const size = parseFloat(document.getElementById('size').value);
+      const type = document.getElementById('type').value;
+      const condition = document.getElementById('condition').value;
+      const year = parseInt(document.getElementById('year').value);
 
-  <div class="post">
-    <p>🛠 Тутор: Как накрутить подписчиков в Telegram за 0₽ с помощью GitHub Actions.</p>
-    <div class="views">👁‍🗨 4.7K</div>
-  </div>
+      let basePricePerSqM = 1200;
+      if (type === 'house') basePricePerSqM = 1000;
+      if (condition === 'renovated') basePricePerSqM += 200;
+      if (year && year > 2015) basePricePerSqM += 100;
+      if (year && year < 1980) basePricePerSqM -= 150;
 
-  <div class="post">
-    <p>🕵️‍♂️ Гайд по даркнет-маркетам в 2025: что живо, а что скам.</p>
-    <div class="views">👁‍🗨 3.1K</div>
-  </div>
-</body
+      const estimate = size * basePricePerSqM;
 
-finally:
-    driver.quit()
-
-
+      document.getElementById('result').textContent =
+        `Estimated Property Value: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+    });
+  </script>
+</body>
+</html>
