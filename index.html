@@ -129,7 +129,25 @@
     }
   </style>
 </head>
-<body>
+<body><!-- Подключение TON Connect SDK -->
+<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect.umd.js"></script>
+
+<script>
+  const tonConnect = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl: "https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json",
+    buttonRootId: "ton-connect-button",
+  });
+
+  async function sendTonPayment() {
+    try {
+      const connectedWallet = await tonConnect.connectWallet();
+      const transaction = {
+        validUntil: Math.floor(Date.now() / 1000) + 360, // 6 минут
+        messages: [
+          {
+            address: "EQC4H...вставь_свой_TON_кошелёк", // ← ВСТАВЬ СЮДА СВОЙ КОШЕЛЁК
+            amount: (2 * 10*
+
 
   <!-- Paywall -->
   <div id="paywall">
