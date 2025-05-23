@@ -103,9 +103,40 @@
       color: #8b949e;
       background: rgba(22, 27, 34, 0.8);
     }
+
+    /* Стили paywall */
+    #paywall {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.95);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #connectWallet {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #0ff, #58a6ff);
+      color: #0d1117;
+      margin-top: 1em;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Paywall -->
+  <div id="paywall">
+    <h2>Для доступа оплатите 2 TON</h2>
+    <button id="connectWallet">Оплатить через TON Wallet</button>
+  </div>
+
   <header>
     <h1>Smart Property Estimator</h1>
   </header>
@@ -138,7 +169,66 @@
   </footer>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
   <script>
+    // Логика оплаты через TON
+    const WALLET_ADDRESS = "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr"; // Твой кошелёк
+    const AMOUNT_TON = 2;
+
+    const tonConnect = new TON_CONNECT_UI.TonConnectUI();
+
+    document.getElementById('connectWallet').addEventListener('click', async () => {
+      try {
+        const connectedWallet = await tonConnect.connectWallet();
+        const walletAddress = connectedWallet.account.address;
+
+        const tx = {
+          validUntil: Math.floor(Date.now() / 1000) + 300,
+          messages: [
+            {
+              address: WALLET_ADDRESS,
+              amount: (AMOUNT_TON * 1e9).toString()
+            }
+          ]
+        };
+
+        await tonConnect.sendTransaction(tx);
+
+        alert("После подтверждения транзакции будет проверка оплаты.");
+
+        const waitAndCheck = async () => {
+          try {
+            const res = await fetch(`https://tonapi.io/v2/blockchain/accounts/${WALLET_ADDRESS}/transactions?limit=10`);
+            const data = await res.json();
+            const paid = data.transactions.find(tx =>
+              tx.in_msg.source === walletAddress &&
+              Number(tx.in_msg.value) >= AMOUNT_TON * 1e9
+            );
+            if (paid) {
+              localStorage.setItem('unlocked', 'yes');
+              document.getElementById('paywall').style.display = 'none';
+            } else {
+              setTimeout(waitAndCheck, 3000);
+            }
+          } catch (err) {
+            console.error(err);
+            setTimeout(waitAndCheck, 5000);
+          }
+        };
+
+        waitAndCheck();
+
+      } catch (error) {
+        alert('Ошибка при оплате: ' + error.message);
+      }
+    });
+
+    // Если уже оплатили ранее — скрываем paywall сразу
+    if (localStorage.getItem('unlocked') === 'yes') {
+      document.getElementById('paywall').style.display = 'none';
+    }
+
+    // Основная логика estimatorForm
     document.getElementById('estimatorForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const size = parseFloat(document.getElementById('size').value);
@@ -155,7 +245,7 @@
       document.getElementById('result').textContent = `Estimated Value: $${estimatedPrice.toLocaleString()}`;
     });
 
-    // Leaflet map setup (optional)
+    // Leaflet map setup (опционально)
     const map = L.map('map').setView([41.7151, 44.8271], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
