@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Оплата TON</title>
+  <script src="https://unpkg.com/@tonconnect/sdk@latest"></script>
+</head>
+<body>
+  <div id="paywall" style="position: fixed; z-index: 9999; background: rgba(0,0,0,0.95); top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <h2 style="color: #fff; font-family: Orbitron;">🔒 Access Locked</h2>
+    <p style="color: #ccc; margin-bottom: 1em;">Pay 2 TON to unlock the full site</p>
+    <button id="connectWallet" style="padding: 1em; font-size: 1em; background: #0ff; color: #000; border: none; border-radius: 6px;">Connect Wallet & Pay</button>
+  </div>
+
+  <script>
+    const WALLET_ADDRESS = "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr"; // Твой кошелёк
+    const AMOUNT_TON = 2;
+
+    const tonConnect = new TON_CONNECT_UI.TonConnectUI();
+
+    document.getElementById('connectWallet').addEventListener('click', async () => {
+      const connectedWallet = await tonConnect.connectWallet();
+      const walletAddress = connectedWallet.account.address;
+
+      // Формируем транзакцию
+      const tx = {
+        validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
+        messages: [
+          {
+            address: WALLET_ADDRESS,
+            amount: (AMOUNT_TON * 1e9).toString() // в нанотонах
+          }
+        ]
+      };
+
+      // Отправка транзакции
+      const result = await tonConnect.sendTransaction(tx);
+
+      alert("После подтверждения транзакции будет редирект.");
+
+      // Проверка оплаты
+      const waitAndCheck = async () => {
+        try {
+          const res = await fetch(`https://tonapi.io/v2/blockchain/accounts/${WALLET_ADDRESS}/transactions?limit=10`);
+          const data = await res.json();
+          const paid = data.transactions.find(tx =>
+            tx.in_msg.source === walletAddress &&
+            tx.in_msg.value >= AMOUNT_TON * 1e9
+          );
+          if (paid) {
+            localStorage.setItem('unlocked', 'yes');
+            window.location.href = 'private.html'; // Страница с закрытым контентом
+          } else {
+            setTimeout(waitAndCheck, 3000);
+          }
+        } catch (err) {
+          console.error(err);
+          setTimeout(waitAndCheck, 5000);
+        }
+      };
+
+      waitAndCheck();
+    });
+
+    // Автоматическая разблокировка если уже платили
+    if (localStorage.getItem('unlocked') === 'yes') {
+      document.getElementById('paywall').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
