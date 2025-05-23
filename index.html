@@ -32,7 +32,7 @@
       margin: 0;
     }
 
-    main {<!-- ВСТАВЛЕНО В КОНЕЦ <main> ПЕРЕД ЗАКРЫТИЕМ </main> -->
+    main {<!<!-- ВСТАВЛЕНО В КОНЕЦ <main> ПЕРЕД ЗАКРЫТИЕМ </main> -->
     <div style="text-align:center; margin-top: 2em;">
       <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
       <div id="payment-status" class="result"></div>
@@ -73,6 +73,11 @@
           } catch (err) {
             statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
             console.error(err);
+          }
+        });
+      });
+    </script>
+
           }
         });
       });
