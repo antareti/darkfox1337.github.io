@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Orbitron', sans-serif;
-      background: url('tbilisi.png') no-repeat center center fixed;
+      background: url('3.gif') no-repeat center center fixed;
       background-size: cover;
       color: #c9d1d9;
       margin: 0;
@@ -150,45 +150,15 @@
       if (type === 'house') basePricePerSqM = 1000;
       if (condition === 'renovated') basePricePerSqM += 200;
       if (year && year > 2015) basePricePerSqM += 100;
-      if (year && year < 1980) basePricePerSqM -= 150;
 
-      const estimate = size * basePricePerSqM;
-
-      document.getElementById('result').textContent =
-        `Estimated Property Value: $${estimate.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+      const estimatedPrice = basePricePerSqM * size;
+      document.getElementById('result').textContent = `Estimated Value: $${estimatedPrice.toLocaleString()}`;
     });
 
-    // Leaflet map init
-    const map = L.map('map').setView([41.7151, 44.8271], 12); // Tbilisi coords
+    // Leaflet map setup (optional)
+    const map = L.map('map').setView([41.7151, 44.8271], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Example placeholder GeoJSON district (you should replace this with real GeoJSON)
-    const districtLayer = L.geoJSON({
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {"name": "Vake"},
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[44.776, 41.715], [44.782, 41.715], [44.782, 41.720], [44.776, 41.720], [44.776, 41.715]]]
-          }
-        }
-      ]
-    }, {
-      onEachFeature: function (feature, layer) {
-        layer.on('click', function () {
-          document.getElementById('district').value = feature.properties.name;
-        });
-        layer.bindPopup(feature.properties.name);
-        layer.setStyle({
-          color: '#0ff',
-          weight: 2,
-          fillOpacity: 0.2
-        });
-      }
     }).addTo(map);
   </script>
 </body>
