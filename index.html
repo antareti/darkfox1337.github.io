@@ -32,7 +32,52 @@
       margin: 0;
     }
 
-    main {
+    main {<!-- ВСТАВЛЕНО В КОНЕЦ <main> ПЕРЕД ЗАКРЫТИЕМ </main> -->
+    <div style="text-align:center; margin-top: 2em;">
+      <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
+      <div id="payment-status" class="result"></div>
+    </div>
+
+    <!-- TON Connect UI SDK -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const connector = new TON_CONNECT_UI.TonConnectUI({
+          manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json',
+          buttonRootId: 'pay-ton'
+        });
+
+        const payButton = document.getElementById('pay-ton');
+        const statusDiv = document.getElementById('payment-status');
+
+        payButton.addEventListener('click', async () => {
+          try {
+            const connectedWallet = await connector.connectWallet();
+            if (!connectedWallet) {
+              statusDiv.textContent = "❌ Кошелек не подключен.";
+              return;
+            }
+
+            const tx = {
+              validUntil: Math.floor(Date.now() / 1000) + 600,
+              messages: [
+                {
+                  address: "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr",
+                  amount: (2 * 1e9).toString()
+                }
+              ]
+            };
+
+            await connector.sendTransaction(tx);
+            statusDiv.textContent = "✅ Оплата успешно отправлена!";
+          } catch (err) {
+            statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
+            console.error(err);
+          }
+        });
+      });
+    </script>
+
       max-width: 600px;
       margin: 2em auto;
       padding: 2em;
