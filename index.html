@@ -6,23 +6,23 @@
   <title>HACKPACK | Smart Estimator</title>
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap"
+    rel="stylesheet"
+  />
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    html, body {
-      height: 100%;
-      overflow: hidden;
+    body {
       font-family: 'Rubik', sans-serif;
       background-color: #0a0a0f;
       color: #e0e0e0;
-    }
-    body {
       display: flex;
       height: 100vh;
+      overflow: hidden;
     }
     .sidebar {
       width: 280px;
@@ -61,8 +61,6 @@
     }
     .main {
       flex: 1;
-      display: flex;
-      flex-direction: column;
       overflow-y: auto;
       background: radial-gradient(ellipse at center, #161623 0%, #0d0d15 100%);
     }
@@ -74,13 +72,9 @@
       background-position: center;
       border-bottom: 2px solid #0ff;
       box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
-      flex-shrink: 0;
     }
     .content {
       padding: 40px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
     }
     h1 {
       font-family: 'Orbitron', sans-serif;
@@ -99,7 +93,8 @@
       margin-top: 1em;
       font-size: 0.95em;
     }
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 0.75em;
       margin-top: 0.4em;
@@ -110,7 +105,8 @@
       font-size: 1em;
       transition: border 0.3s;
     }
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       border-color: #58a6ff;
       outline: none;
     }
@@ -149,7 +145,6 @@
       padding: 1em;
       font-size: 0.85em;
       color: #7f8c99;
-      flex-shrink: 0;
     }
   </style>
 </head>
@@ -160,7 +155,11 @@
       <li>Главная</li>
       <li>О нас</li>
       <li>Контакты</li>
-      <li><a href="https://t.me/vipcam1977" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+      <li>
+        <a href="https://t.me/vipcam1977" target="_blank" rel="noopener noreferrer"
+          >Telegram</a
+        >
+      </li>
     </ul>
   </div>
 
@@ -169,19 +168,29 @@
     <div class="content">
       <h1>Smart Property Estimator</h1>
       <form id="estimatorForm">
-        <label>Город:<input type="text" id="city" required></label>
-        <label>Район:<input type="text" id="district" required></label>
-        <label>Тип недвижимости:
-          <select id="type">
+        <label for="city">Город:
+          <input type="text" id="city" name="city" required />
+        </label>
+        <label for="district">Район:
+          <input type="text" id="district" name="district" required />
+        </label>
+        <label for="type">Тип недвижимости:
+          <select id="type" name="type">
             <option value="apartment">Квартира</option>
             <option value="house">Дом</option>
           </select>
         </label>
-        <label>Площадь (м²):<input type="number" id="size" required></label>
-        <label>Этаж:<input type="number" id="floor"></label>
-        <label>Год постройки:<input type="number" id="year"></label>
-        <label>Состояние:
-          <select id="condition">
+        <label for="size">Площадь (м²):
+          <input type="number" id="size" name="size" min="0" required />
+        </label>
+        <label for="floor">Этаж:
+          <input type="number" id="floor" name="floor" min="0" />
+        </label>
+        <label for="year">Год постройки:
+          <input type="number" id="year" name="year" min="1800" max="2099" step="1" />
+        </label>
+        <label for="condition">Состояние:
+          <select id="condition" name="condition">
             <option value="renovated">Отремонтировано</option>
             <option value="not-renovated">Без ремонта</option>
           </select>
@@ -198,18 +207,25 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    // Обработчик формы оценки недвижимости
     document.getElementById('estimatorForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
       const size = parseFloat(document.getElementById('size').value);
+      // Простейшая формула для оценки стоимости
       const result = size * 1000 + ' $';
+
       document.getElementById('result').textContent = 'Оценочная стоимость: ' + result;
     });
 
-    // Инициализация карты со спутниковыми снимками
+    // Инициализация карты с использованием спутниковых снимков Esri
     const map = L.map('map').setView([55.751244, 37.618423], 12);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-    }).addTo(map);
+    L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: '&copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community',
+      }
+    ).addTo(map);
   </script>
 </body>
 </html>
