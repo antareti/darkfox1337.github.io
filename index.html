@@ -210,26 +210,61 @@
 
 </body><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-  // Обработка формы
-  document.getElementById('estimatorForm').addEventListener('submit', function (e) {
+  let map = L.map('map').setView([55.751244, 37.618423], 13);
+
+  // Спутниковый слой от Esri
+  const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Esri, Maxar, Earthstar Geographics',
+  });
+
+  // Уличный слой от OpenStreetMap
+  const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  });
+
+  // По умолчанию спутник
+  esriSat.addTo(map);
+
+  // Слои переключения
+  const baseMaps = {
+    "Спутник": esriSat,
+    "Улицы": osmStreets
+  };
+  L.control.layers(baseMaps).addTo(map);
+
+  let marker; // Глобальный маркер
+
+  document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
     e.preventDefault();
+    
+    const city = document.getElementById('city').value;
+    const district = document.getElementById('district').value;
+    const address = `${district}, ${city}`;
+
+    // Геокодирование через Nominatim
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+    const data = await res.json();
+
+    if (data && data.length > 0) {
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+
+      map.setView([lat, lon], 15);
+
+      // Удаление старого маркера
+      if (marker) map.removeLayer(marker);
+
+      marker = L.marker([lat, lon]).addTo(map)
+        .bindPopup(`Местоположение: ${address}`)
+        .openPopup();
+    }
+
+    // Расчёт стоимости
     const size = parseFloat(document.getElementById('size').value);
     const result = size * 1000;
     document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
   });
-
-  // Инициализация карты с центром на Москву
-  const map = L.map('map').setView([55.751244, 37.618423], 13);
-
-  // Спутниковая карта от Esri
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics'
-  }).addTo(map);
-
-  // Пример маркера
-  L.marker([55.751244, 37.618423]).addTo(map)
-    .bindPopup('Пример: Москва')
-    .openPopup();
 </script>
+
 
 </html>
