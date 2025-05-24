@@ -1,44 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Property Estimator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <title>HACKPACK | Smart Estimator</title>
+  <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
     body {
+      font-family: 'Rubik', sans-serif;
+      background-color: #1e1e2f;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 300px;
+      background-color: #2a2a3b;
+      border-right: 1px solid #444;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      padding: 12px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .sidebar ul li:hover {
+      background-color: #3a3a4d;
+    }
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      background-color: #262638;
+    }
+    h1 {
       font-family: 'Orbitron', sans-serif;
-      background: url('3.gif') no-repeat center center fixed;
-      background-size: cover;
-      color: #c9d1d9;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: rgba(22, 27, 34, 0.9);
-      padding: 1em;
-      text-align: center;
-      border-bottom: 2px solid #30363d;
-    }
-    header h1 {
       color: #58a6ff;
-      margin: 0;
-    }
-    main {
-      max-width: 600px;
-      margin: 2em auto;
-      padding: 2em;
-      background: rgba(22, 27, 34, 0.95);
-      border-radius: 12px;
-      box-shadow: 0 0 12px #0ff;
+      text-align: center;
+      margin-bottom: 20px;
     }
     label {
       display: block;
-      margin-top: 1.5em;
+      margin-top: 1em;
       font-size: 0.95em;
     }
     input, select {
@@ -89,110 +106,67 @@
       padding: 1em;
       font-size: 0.85em;
       color: #8b949e;
-      background: rgba(22, 27, 34, 0.8);
     }
   </style>
 </head>
 <body>
-  <header>
+  <div class="sidebar">
+    <h2>HACKPACK</h2>
+    <ul>
+      <li>Главная</li>
+      <li>О нас</li>
+      <li>Контакты</li>
+      <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
     <h1>Smart Property Estimator</h1>
-  </header>
-  <main>
     <form id="estimatorForm">
-      <label>City:<input type="text" id="city" required></label>
-      <label>District:<input type="text" id="district" required></label>
-      <label>Property Type:
+      <label>Город:<input type="text" id="city" required></label>
+      <label>Район:<input type="text" id="district" required></label>
+      <label>Тип недвижимости:
         <select id="type">
-          <option value="apartment">Apartment</option>
-          <option value="house">House</option>
+          <option value="apartment">Квартира</option>
+          <option value="house">Дом</option>
         </select>
       </label>
-      <label>Size (m²):<input type="number" id="size" required></label>
-      <label>Floor:<input type="number" id="floor"></label>
-      <label>Year Built:<input type="number" id="year"></label>
-      <label>Condition:
+      <label>Площадь (м²):<input type="number" id="size" required></label>
+      <label>Этаж:<input type="number" id="floor"></label>
+      <label>Год постройки:<input type="number" id="year"></label>
+      <label>Состояние:
         <select id="condition">
-          <option value="renovated">Renovated</option>
-          <option value="not-renovated">Not Renovated</option>
+          <option value="renovated">Отремонтировано</option>
+          <option value="not-renovated">Без ремонта</option>
         </select>
       </label>
-      <button type="submit">Estimate Value</button>
+      <button type="submit">Оценить</button>
     </form>
+
     <div id="map"></div>
     <div class="result" id="result"></div>
 
-    <!-- ВСТАВКА TON кнопки -->
     <div style="text-align:center; margin-top: 2em;">
       <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
       <div id="payment-status" class="result"></div>
     </div>
-  </main>
-  <footer>
-    &copy; 2025 Smart Property Estimator. All rights reserved.
-  </footer>
+
+    <footer>&copy; 2025 HACKPACK | Smart Property Estimator</footer>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     document.getElementById('estimatorForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const size = parseFloat(document.getElementById('size').value);
-      const type = document.getElementById('type').value;
-      const condition = document.getElementById('condition').value;
-      const year = parseInt(document.getElementById('year').value);
-
-      let basePricePerSqM = 1200;
-      if (type === 'house') basePricePerSqM = 1000;
-      if (condition === 'renovated') basePricePerSqM += 200;
-      if (year && year > 2015) basePricePerSqM += 100;
-
-      const estimatedPrice = basePricePerSqM * size;
-      document.getElementById('result').textContent = `Estimated Value: $${estimatedPrice.toLocaleString()}`;
+      const result = size * 1000 + ' $'; // Пример логики
+      document.getElementById('result').textContent = 'Оценочная стоимость: ' + result;
     });
 
-    const map = L.map('map').setView([41.7151, 44.8271], 12);
+    const map = L.map('map').setView([55.751244, 37.618423], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-  </script>
-
-  <!-- TON Connect UI SDK -->
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const connector = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json',
-        buttonRootId: 'pay-ton'
-      });
-
-      const payButton = document.getElementById('pay-ton');
-      const statusDiv = document.getElementById('payment-status');
-
-      payButton.addEventListener('click', async () => {
-        try {
-          const connectedWallet = await connector.connectWallet();
-          if (!connectedWallet) {
-            statusDiv.textContent = "❌ Кошелек не подключен.";
-            return;
-          }
-
-          const tx = {
-            validUntil: Math.floor(Date.now() / 1000) + 600,
-            messages: [
-              {
-                address: "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr",
-                amount: (2 * 1e9).toString()
-              }
-            ]
-          };
-
-          await connector.sendTransaction(tx);
-          statusDiv.textContent = "✅ Оплата успешно отправлена!";
-        } catch (err) {
-          statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
-          console.error(err);
-        }
-      });
-    });
   </script>
 </body>
 </html>
