@@ -10,7 +10,6 @@
     * {
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Orbitron', sans-serif;
       background: url('3.gif') no-repeat center center fixed;
@@ -19,19 +18,16 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background: rgba(22, 27, 34, 0.9);
       padding: 1em;
       text-align: center;
       border-bottom: 2px solid #30363d;
     }
-
     header h1 {
       color: #58a6ff;
       margin: 0;
     }
-
     main {
       max-width: 600px;
       margin: 2em auto;
@@ -40,13 +36,11 @@
       border-radius: 12px;
       box-shadow: 0 0 12px #0ff;
     }
-
     label {
       display: block;
       margin-top: 1.5em;
       font-size: 0.95em;
     }
-
     input, select {
       width: 100%;
       padding: 0.75em;
@@ -57,12 +51,10 @@
       color: #c9d1d9;
       font-size: 1em;
     }
-
     input:focus, select:focus {
       border-color: #58a6ff;
       outline: none;
     }
-
     button {
       margin-top: 2em;
       padding: 0.9em;
@@ -76,11 +68,9 @@
       cursor: pointer;
       transition: background 0.3s ease-in-out;
     }
-
     button:hover {
       background: linear-gradient(90deg, #58a6ff, #0ff);
     }
-
     .result {
       margin-top: 2em;
       font-size: 1.2em;
@@ -88,13 +78,11 @@
       color: #39ff14;
       text-align: center;
     }
-
     #map {
       height: 400px;
       border-radius: 12px;
       margin-top: 2em;
     }
-
     footer {
       text-align: center;
       margin-top: 2em;
@@ -132,6 +120,12 @@
     </form>
     <div id="map"></div>
     <div class="result" id="result"></div>
+
+    <!-- ВСТАВКА TON кнопки -->
+    <div style="text-align:center; margin-top: 2em;">
+      <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
+      <div id="payment-status" class="result"></div>
+    </div>
   </main>
   <footer>
     &copy; 2025 Smart Property Estimator. All rights reserved.
@@ -155,57 +149,50 @@
       document.getElementById('result').textContent = `Estimated Value: $${estimatedPrice.toLocaleString()}`;
     });
 
-    // Leaflet map setup (optional)
     const map = L.map('map').setView([41.7151, 44.8271], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
   </script>
+
+  <!-- TON Connect UI SDK -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const connector = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json',
+        buttonRootId: 'pay-ton'
+      });
+
+      const payButton = document.getElementById('pay-ton');
+      const statusDiv = document.getElementById('payment-status');
+
+      payButton.addEventListener('click', async () => {
+        try {
+          const connectedWallet = await connector.connectWallet();
+          if (!connectedWallet) {
+            statusDiv.textContent = "❌ Кошелек не подключен.";
+            return;
+          }
+
+          const tx = {
+            validUntil: Math.floor(Date.now() / 1000) + 600,
+            messages: [
+              {
+                address: "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr",
+                amount: (2 * 1e9).toString()
+              }
+            ]
+          };
+
+          await connector.sendTransaction(tx);
+          statusDiv.textContent = "✅ Оплата успешно отправлена!";
+        } catch (err) {
+          statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
+          console.error(err);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-</main><!-- ВСТАВЛЕНО В КОНЕЦ <main> ПЕРЕД ЗАКРЫТИЕМ </main> -->
-    <div style="text-align:center; margin-top: 2em;">
-      <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
-      <div id="payment-status" class="result"></div>
-    </div>
-
-    <!-- TON Connect UI SDK -->
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const connector = new TON_CONNECT_UI.TonConnectUI({
-          manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json',
-          buttonRootId: 'pay-ton'
-        });
-
-        const payButton = document.getElementById('pay-ton');
-        const statusDiv = document.getElementById('payment-status');
-
-        payButton.addEventListener('click', async () => {
-          try {
-            const connectedWallet = await connector.connectWallet();
-            if (!connectedWallet) {
-              statusDiv.textContent = "❌ Кошелек не подключен.";
-              return;
-            }
-
-            const tx = {
-              validUntil: Math.floor(Date.now() / 1000) + 600,
-              messages: [
-                {
-                  address: "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr",
-                  amount: (2 * 1e9).toString()
-                }
-              ]
-            };
-
-            await connector.sendTransaction(tx);
-            statusDiv.textContent = "✅ Оплата успешно отправлена!";
-          } catch (err) {
-            statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
-            console.error(err);
-          }
-        });
-      });
-    </script>{
- 
