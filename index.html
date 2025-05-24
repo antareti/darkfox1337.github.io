@@ -205,66 +205,69 @@
     </div>
   </div>
 
-  <script 
-</script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let map = L.map('map').setView([55.751244, 37.618423], 13);
 
-</body><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-  let map = L.map('map').setView([55.751244, 37.618423], 13);
+    // Спутниковый слой от Esri
+    const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Esri, Maxar, Earthstar Geographics',
+    });
 
-  // Спутниковый слой от Esri
-  const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Esri, Maxar, Earthstar Geographics',
-  });
+    // Уличный слой от OpenStreetMap
+    const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
 
-  // Уличный слой от OpenStreetMap
-  const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  });
+    // По умолчанию спутник
+    esriSat.addTo(map);
 
-  // По умолчанию спутник
-  esriSat.addTo(map);
+    // Слои переключения
+    const baseMaps = {
+      "Спутник": esriSat,
+      "Улицы": osmStreets
+    };
+    L.control.layers(baseMaps).addTo(map);
 
-  // Слои переключения
-  const baseMaps = {
-    "Спутник": esriSat,
-    "Улицы": osmStreets
-  };
-  L.control.layers(baseMaps).addTo(map);
+    let marker; // Глобальный маркер
 
-  let marker; // Глобальный маркер
+    document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      
+      const city = document.getElementById('city').value.trim();
+      const district = document.getElementById('district').value.trim();
+      const address = `${district}, ${city}`;
 
-  document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    
-    const city = document.getElementById('city').value;
-    const district = document.getElementById('district').value;
-    const address = `${district}, ${city}`;
+      // Геокодирование через Nominatim
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const data = await res.json();
 
-    // Геокодирование через Nominatim
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-    const data = await res.json();
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
 
-    if (data && data.length > 0) {
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
+          map.setView([lat, lon], 15);
 
-      map.setView([lat, lon], 15);
+          // Удаление старого маркера
+          if (marker) map.removeLayer(marker);
 
-      // Удаление старого маркера
-      if (marker) map.removeLayer(marker);
+          marker = L.marker([lat, lon]).addTo(map)
+            .bindPopup(`Местоположение: ${address}`)
+            .openPopup();
+        } else {
+          alert('Адрес не найден. Попробуйте ввести другие данные.');
+        }
+      } catch (error) {
+        alert('Ошибка при определении местоположения.');
+        console.error(error);
+      }
 
-      marker = L.marker([lat, lon]).addTo(map)
-        .bindPopup(`Местоположение: ${address}`)
-        .openPopup();
-    }
-
-    // Расчёт стоимости
-    const size = parseFloat(document.getElementById('size').value);
-    const result = size * 1000;
-    document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
-  });
-</script>
-
-
+      // Расчёт стоимости (простой пример)
+      const size = parseFloat(document.getElementById('size').value);
+      const result = size * 1000;
+      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
+    });
+  </script>
+</body>
 </html>
