@@ -4,72 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HACKPACK | Smart Estimator</title>
-  <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
+
     body {
       font-family: 'Rubik', sans-serif;
       background-color: #0a0a0f;
       color: #e0e0e0;
       display: flex;
-      height: 100vh;
-      /* overflow: hidden; */ /* Убрано для нормальной прокрутки */
+      min-height: 100vh;
     }
+
     .sidebar {
       width: 280px;
       background-color: #12121b;
       border-right: 1px solid #2c2c3b;
       padding: 25px;
-      box-shadow: 4px 0 10px rgba(0, 255, 255, 0.05);
       overflow-y: auto;
     }
+
     .sidebar h2 {
       font-family: 'Orbitron', sans-serif;
       font-size: 24px;
       color: #58a6ff;
       text-align: center;
       margin-bottom: 30px;
-      letter-spacing: 1px;
     }
+
     .sidebar ul {
       list-style: none;
     }
+
     .sidebar ul li {
       padding: 12px;
       border-radius: 8px;
       margin-bottom: 12px;
       background-color: #1e1e2b;
-      transition: background 0.3s, transform 0.2s;
+      transition: 0.3s;
       cursor: pointer;
     }
+
     .sidebar ul li:hover {
       background-color: #2f2f44;
       transform: translateX(5px);
     }
+
     .sidebar ul li a {
       color: inherit;
       text-decoration: none;
       display: block;
     }
+
     .main {
       flex: 1;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       background: radial-gradient(ellipse at center, #161623 0%, #0d0d15 100%);
     }
+
     .header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      width: 100%;
+      flex-shrink: 0;
       height: 200px;
       background-image: url('2.png');
       background-size: cover;
@@ -77,10 +78,13 @@
       border-bottom: 2px solid #0ff;
       box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
     }
+
     .content {
+      overflow-y: auto;
       padding: 40px;
-      padding-top: 220px; /* Отступ чтобы не заходило под шапку */
+      flex-grow: 1;
     }
+
     h1 {
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
@@ -89,15 +93,17 @@
       margin-bottom: 30px;
       text-shadow: 0 0 10px #0ff;
     }
+
     form {
       max-width: 600px;
       margin: 0 auto;
     }
+
     label {
       display: block;
       margin-top: 1em;
-      font-size: 0.95em;
     }
+
     input,
     select {
       width: 100%;
@@ -108,13 +114,8 @@
       background: #0f111a;
       color: #d6e0f0;
       font-size: 1em;
-      transition: border 0.3s;
     }
-    input:focus,
-    select:focus {
-      border-color: #58a6ff;
-      outline: none;
-    }
+
     button {
       margin-top: 2em;
       padding: 0.9em;
@@ -123,27 +124,23 @@
       color: #000;
       border: none;
       border-radius: 8px;
-      font-size: 1em;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.4s ease-in-out;
     }
-    button:hover {
-      background: linear-gradient(90deg, #58a6ff, #0ff);
-    }
+
     .result {
       margin-top: 2em;
       font-size: 1.2em;
-      font-weight: bold;
       color: #39ff14;
       text-align: center;
     }
+
     #map {
       height: 400px;
-      border-radius: 12px;
       margin-top: 2em;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+      border-radius: 12px;
     }
+
     footer {
       text-align: center;
       margin-top: 3em;
@@ -160,16 +157,13 @@
       <li>Главная</li>
       <li>О нас</li>
       <li>Контакты</li>
-      <li>
-        <a href="https://t.me/vipcam1977" target="_blank" rel="noopener noreferrer"
-          >Telegram</a
-        >
-      </li>
+      <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
     </ul>
   </div>
 
   <div class="main">
     <div class="header"></div>
+
     <div class="content">
       <h1>Smart Property Estimator</h1>
       <form id="estimatorForm">
@@ -192,7 +186,7 @@
           <input type="number" id="floor" name="floor" min="0" />
         </label>
         <label for="year">Год постройки:
-          <input type="number" id="year" name="year" min="1800" max="2099" step="1" />
+          <input type="number" id="year" name="year" min="1800" max="2099" />
         </label>
         <label for="condition">Состояние:
           <select id="condition" name="condition">
@@ -205,32 +199,18 @@
 
       <div id="map"></div>
       <div class="result" id="result"></div>
-
-      <footer>&copy; 2025 HACKPACK | Smart Property Estimator</footer>
+      <footer>&copy; 2025 HACKPACK | Smart Estimator</footer>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Обработчик формы оценки недвижимости
     document.getElementById('estimatorForm').addEventListener('submit', function (e) {
       e.preventDefault();
-
       const size = parseFloat(document.getElementById('size').value);
-      // Простейшая формула для оценки стоимости
-      const result = size * 1000 + ' $';
-
-      document.getElementById('result').textContent = 'Оценочная стоимость: ' + result;
+      const result = size * 1000;
+      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
     });
-
-    // Инициализация карты с использованием спутниковых снимков Esri
-    const map = L.map('map').setView([55.751244, 37.618423], 12);
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      {
-        attribution: '&copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community',
-      }
-    ).addTo(map);
   </script>
 </body>
 </html>
