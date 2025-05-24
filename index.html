@@ -205,15 +205,10 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const size = parseFloat(document.getElementById('size').value);
-      const result = size * 1000;
-      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
-    });
-  </script><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script 
+</script>
+
+</body><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
   // Обработка формы
   document.getElementById('estimatorForm').addEventListener('submit', function (e) {
@@ -223,19 +218,18 @@
     document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
   });
 
-  // Инициализация карты
-  const map = L.map('map').setView([55.751244, 37.618423], 10); // координаты Москвы
+  // Инициализация карты с центром на Москву
+  const map = L.map('map').setView([55.751244, 37.618423], 13);
 
-  // Добавление тайлов (плиток) карты от OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+  // Спутниковая карта от Esri
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics'
   }).addTo(map);
 
   // Пример маркера
   L.marker([55.751244, 37.618423]).addTo(map)
-    .bindPopup('Пример маркера<br>Москва.')
+    .bindPopup('Пример: Москва')
     .openPopup();
 </script>
 
-</body>
 </html>
