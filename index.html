@@ -6,20 +6,23 @@
   <title>HACKPACK | Smart Estimator</title>
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    body {
+    html, body {
+      height: 100%;
+      overflow: hidden;
       font-family: 'Rubik', sans-serif;
       background-color: #0a0a0f;
       color: #e0e0e0;
+    }
+    body {
       display: flex;
       height: 100vh;
-      overflow: hidden;
     }
     .sidebar {
       width: 280px;
@@ -58,6 +61,8 @@
     }
     .main {
       flex: 1;
+      display: flex;
+      flex-direction: column;
       overflow-y: auto;
       background: radial-gradient(ellipse at center, #161623 0%, #0d0d15 100%);
     }
@@ -69,9 +74,13 @@
       background-position: center;
       border-bottom: 2px solid #0ff;
       box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+      flex-shrink: 0;
     }
     .content {
       padding: 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     h1 {
       font-family: 'Orbitron', sans-serif;
@@ -140,6 +149,7 @@
       padding: 1em;
       font-size: 0.85em;
       color: #7f8c99;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -150,7 +160,7 @@
       <li>Главная</li>
       <li>О нас</li>
       <li>Контакты</li>
-      <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
+      <li><a href="https://t.me/vipcam1977" target="_blank" rel="noopener noreferrer">Telegram</a></li>
     </ul>
   </div>
 
@@ -195,7 +205,7 @@
       document.getElementById('result').textContent = 'Оценочная стоимость: ' + result;
     });
 
-    // Карта со спутниковыми снимками
+    // Инициализация карты со спутниковыми снимками
     const map = L.map('map').setView([55.751244, 37.618423], 12);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '&copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
