@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
-    /* Оставил твои стили без изменений */
     * {
       margin: 0;
       padding: 0;
@@ -59,9 +58,20 @@
     }
     .main {
       flex: 1;
-      padding: 40px;
       overflow-y: auto;
       background: radial-gradient(ellipse at center, #161623 0%, #0d0d15 100%);
+    }
+    .header {
+      width: 100%;
+      height: 200px;
+      background-image: url('2.png');
+      background-size: cover;
+      background-position: center;
+      border-bottom: 2px solid #0ff;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+    }
+    .content {
+      padding: 40px;
     }
     h1 {
       font-family: 'Orbitron', sans-serif;
@@ -145,32 +155,35 @@
   </div>
 
   <div class="main">
-    <h1>Smart Property Estimator</h1>
-    <form id="estimatorForm">
-      <label>Город:<input type="text" id="city" required></label>
-      <label>Район:<input type="text" id="district" required></label>
-      <label>Тип недвижимости:
-        <select id="type">
-          <option value="apartment">Квартира</option>
-          <option value="house">Дом</option>
-        </select>
-      </label>
-      <label>Площадь (м²):<input type="number" id="size" required></label>
-      <label>Этаж:<input type="number" id="floor"></label>
-      <label>Год постройки:<input type="number" id="year"></label>
-      <label>Состояние:
-        <select id="condition">
-          <option value="renovated">Отремонтировано</option>
-          <option value="not-renovated">Без ремонта</option>
-        </select>
-      </label>
-      <button type="submit">Оценить</button>
-    </form>
+    <div class="header"></div>
+    <div class="content">
+      <h1>Smart Property Estimator</h1>
+      <form id="estimatorForm">
+        <label>Город:<input type="text" id="city" required></label>
+        <label>Район:<input type="text" id="district" required></label>
+        <label>Тип недвижимости:
+          <select id="type">
+            <option value="apartment">Квартира</option>
+            <option value="house">Дом</option>
+          </select>
+        </label>
+        <label>Площадь (м²):<input type="number" id="size" required></label>
+        <label>Этаж:<input type="number" id="floor"></label>
+        <label>Год постройки:<input type="number" id="year"></label>
+        <label>Состояние:
+          <select id="condition">
+            <option value="renovated">Отремонтировано</option>
+            <option value="not-renovated">Без ремонта</option>
+          </select>
+        </label>
+        <button type="submit">Оценить</button>
+      </form>
 
-    <div id="map"></div>
-    <div class="result" id="result"></div>
+      <div id="map"></div>
+      <div class="result" id="result"></div>
 
-    <footer>&copy; 2025 HACKPACK | Smart Property Estimator</footer>
+      <footer>&copy; 2025 HACKPACK | Smart Property Estimator</footer>
+    </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
