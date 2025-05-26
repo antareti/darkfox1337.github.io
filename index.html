@@ -72,7 +72,7 @@
     .header {
       flex-shrink: 0;
       height: 500px;
-      background-image: url('2.gif'); /* заменили на .gif */
+      background-image: url('2.gif'), linear-gradient(#111, #000); /* fallback gradient */
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -165,16 +165,57 @@
 
   <div class="main">
     <div class="header"></div>
-
     <div class="content">
       <h1>Smart Property Estimator</h1>
-      <!-- форма осталась без изменений -->
+      <form id="estimatorForm">
+        <label for="area">Площадь (м²):</label>
+        <input type="number" id="area" name="area" required />
+
+        <label for="location">Расположение:</label>
+        <select id="location" name="location">
+          <option value="city">Город</option>
+          <option value="suburb">Пригород</option>
+          <option value="village">Село</option>
+        </select>
+
+        <button type="submit">Рассчитать стоимость</button>
+        <div class="result" id="result"></div>
+      </form>
+
+      <div id="map"></div>
+
+      <footer>© 2025 HACKPACK. Все права защищены.</footer>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Leaflet карта остаётся как есть
+    document.getElementById('estimatorForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const area = parseFloat(document.getElementById('area').value);
+      const location = document.getElementById('location').value;
+      let multiplier = 1;
+
+      switch (location) {
+        case 'city':
+          multiplier = 1000;
+          break;
+        case 'suburb':
+          multiplier = 750;
+          break;
+        case 'village':
+          multiplier = 500;
+          break;
+      }
+
+      const estimate = area * multiplier;
+      document.getElementById('result').innerText = `Оценочная стоимость: ${estimate.toLocaleString()} ₽`;
+    });
+
+    const map = L.map('map').setView([55.751244, 37.618423], 10); // Москва
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
   </script>
 </body>
 </html>
