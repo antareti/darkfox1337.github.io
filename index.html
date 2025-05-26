@@ -3,10 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HACKPACK | Smart Estimator</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
-  <style>
+  <title>Мой сайт</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Контент страницы -->
+  <h1>Добро пожаловать!</h1>
+  <p>Кликни в любом месте, чтобы услышать звук.</p>
+
+  <!-- Аудиоэлемент для воспроизведения звука клика -->
+  <audio id="clickSound" src="audio/click.mp3" preload="auto"></audio>
+
+  <!-- Скрипт для воспроизведения звука -->
+  <script>
+    document.addEventListener("click", function () {
+      const sound = document.getElementById("clickSound");
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play();
+      }
+    });
+  </script>
+</body>
+</html>
+
     /* Стили как были */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
