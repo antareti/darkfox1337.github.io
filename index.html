@@ -7,11 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Rubik', sans-serif;
@@ -209,36 +205,31 @@
   <script>
     let map = L.map('map').setView([55.751244, 37.618423], 13);
 
-    // Спутниковый слой от Esri
     const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Esri, Maxar, Earthstar Geographics',
     });
 
-    // Уличный слой от OpenStreetMap
     const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     });
 
-    // По умолчанию спутник
     esriSat.addTo(map);
 
-    // Слои переключения
     const baseMaps = {
       "Спутник": esriSat,
       "Улицы": osmStreets
     };
     L.control.layers(baseMaps).addTo(map);
 
-    let marker; // Глобальный маркер
+    let marker;
 
     document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      
+
       const city = document.getElementById('city').value.trim();
       const district = document.getElementById('district').value.trim();
       const address = `${district}, ${city}`;
 
-      // Геокодирование через Nominatim
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
         const data = await res.json();
@@ -246,27 +237,19 @@
         if (data && data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
+          map.setView([lat, lon], 16);
 
-          map.setView([lat, lon], 15);
-
-          // Удаление старого маркера
           if (marker) map.removeLayer(marker);
+          marker = L.marker([lat, lon]).addTo(map);
 
-          marker = L.marker([lat, lon]).addTo(map)
-            .bindPopup(`Местоположение: ${address}`)
-            .openPopup();
+          document.getElementById('result').textContent = `Предположительное местоположение: ${lat.toFixed(5)}, ${lon.toFixed(5)}.`;
         } else {
-          alert('Адрес не найден. Попробуйте ввести другие данные.');
+          document.getElementById('result').textContent = 'Не удалось найти координаты по указанному адресу.';
         }
-      } catch (error) {
-        alert('Ошибка при определении местоположения.');
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('result').textContent = 'Ошибка при получении координат.';
       }
-
-      // Расчёт стоимости (простой пример)
-      const size = parseFloat(document.getElementById('size').value);
-      const result = size * 1000;
-      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
     });
   </script>
 </body>
