@@ -8,11 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
     /* Стили как были */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Rubik', sans-serif;
       background-color: #0a0a0f;
@@ -34,9 +30,7 @@
       text-align: center;
       margin-bottom: 30px;
     }
-    .sidebar ul {
-      list-style: none;
-    }
+    .sidebar ul { list-style: none; }
     .sidebar ul li {
       padding: 12px;
       border-radius: 8px;
@@ -181,6 +175,7 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    // Карта
     let map = L.map('map').setView([55.751244, 37.618423], 13);
     const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Esri, Maxar, Earthstar Geographics',
@@ -197,34 +192,19 @@
 
     let marker;
 
-    document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
+    // Звук и отправка
+    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
       e.preventDefault();
-
       const sound = document.getElementById('clickSound');
-      sound.play(); // 🔊 звук при отправке
+      sound.play().catch(err => console.warn("Звук не воспроизведён:", err));
 
       const city = document.getElementById('city').value.trim();
       const district = document.getElementById('district').value.trim();
       const address = `${district}, ${city}`;
       
-      // Продолжение геокодирования и оценки...
+      // Тут будет логика оценки и геокодирования
+      console.log("Оценка для адреса:", address);
     });
   </script>
-</body><audio id="clickSound" src="2.mp3" preload="auto"></audio>
-<script>document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-
-  // Воспроизведение звука
-  const sound = document.getElementById('clickSound');
-  sound.currentTime = 0;
-  sound.play();
-
-  // Здесь логика обработки формы
-  const city = document.getElementById('city').value;
-  const size = parseFloat(document.getElementById('size').value);
-  const result = document.getElementById('result');
-  const estimate = Math.round(1000 * size + Math.random() * 10000);
-  result.textContent = `Оценочная стоимость недвижимости в ${city}: ~${estimate.toLocaleString()} $`;
-});
-
+</body>
 </html>
