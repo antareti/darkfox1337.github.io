@@ -24,8 +24,8 @@
 
     .container {
       display: flex;
-      flex: 1;
       flex-direction: row;
+      flex: 1;
     }
 
     .sidebar {
@@ -34,7 +34,6 @@
       border-right: 1px solid #2c2c3b;
       padding: 20px;
       overflow-y: auto;
-      flex-shrink: 0;
     }
 
     .sidebar h2 {
@@ -158,6 +157,21 @@
       color: #7f8c99;
     }
 
+    .play-audio-button {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 9999;
+      padding: 10px 15px;
+      background-color: #0ff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #0ff;
+      cursor: pointer;
+    }
+
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -198,6 +212,9 @@
   </style>
 </head>
 <body>
+  <audio id="bgMusic" src="2.mp3" autoplay loop></audio>
+  <button class="play-audio-button" onclick="playAudio()">🎵 Включить звук</button>
+
   <div class="container">
     <div class="sidebar">
       <h2>HACKPACK</h2>
@@ -211,31 +228,20 @@
 
     <div class="main">
       <div class="header"></div>
-
       <div class="content">
         <h1>Smart Property Estimator</h1>
         <form id="estimatorForm">
-          <label for="city">Город:
-            <input type="text" id="city" name="city" required />
-          </label>
-          <label for="district">Район:
-            <input type="text" id="district" name="district" required />
-          </label>
+          <label for="city">Город:<input type="text" id="city" name="city" required /></label>
+          <label for="district">Район:<input type="text" id="district" name="district" required /></label>
           <label for="type">Тип недвижимости:
             <select id="type" name="type">
               <option value="apartment">Квартира</option>
               <option value="house">Дом</option>
             </select>
           </label>
-          <label for="size">Площадь (м²):
-            <input type="number" id="size" name="size" min="0" required />
-          </label>
-          <label for="floor">Этаж:
-            <input type="number" id="floor" name="floor" min="0" />
-          </label>
-          <label for="year">Год постройки:
-            <input type="number" id="year" name="year" min="1800" max="2099" />
-          </label>
+          <label for="size">Площадь (м²):<input type="number" id="size" name="size" min="0" required /></label>
+          <label for="floor">Этаж:<input type="number" id="floor" name="floor" min="0" /></label>
+          <label for="year">Год постройки:<input type="number" id="year" name="year" min="1800" max="2099" /></label>
           <label for="condition">Состояние:
             <select id="condition" name="condition">
               <option value="renovated">Отремонтировано</option>
@@ -244,7 +250,6 @@
           </label>
           <button type="submit">Оценить</button>
         </form>
-
         <div id="map"></div>
         <div class="result" id="result"></div>
         <footer>&copy; 2025 HACKPACK | Smart Estimator</footer>
@@ -254,51 +259,15 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    let map = L.map('map').setView([55.751244, 37.618423], 13);
+    const map = L.map('map').setView([55.751244, 37.618423], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Esri, Maxar, Earthstar Geographics',
-    });
-
-    const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    });
-
-    esriSat.addTo(map);
-
-    const baseMaps = {
-      "Спутник": esriSat,
-      "Улицы": osmStreets
-    };
-    L.control.layers(baseMaps).addTo(map);
-
-    let marker;
-
-    document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const city = document.getElementById('city').value.trim();
-      const district = document.getElementById('district').value.trim();
-      const address = `${district}, ${city}`;
-
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-        const data = await res.json();
-
-        if (data.length > 0) {
-          const { lat, lon } = data[0];
-          if (marker) map.removeLayer(marker);
-          marker = L.marker([lat, lon]).addTo(map);
-          map.setView([lat, lon], 15);
-        } else {
-          alert('Местоположение не найдено.');
-        }
-      } catch (error) {
-        alert('Ошибка при загрузке координат.');
-      }
-
-      document.getElementById('result').textContent = "Примерная оценка: 8.5 млн ₽";
-    });
+    function playAudio() {
+      const audio = document.getElementById('bgMusic');
+      audio.play().then(() => {
+        document.querySelector('.play-audio-button').style.display = 'none';
+      });
+    }
   </script>
 </body>
 </html>
