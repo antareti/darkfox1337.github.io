@@ -1,198 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Property Estimator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <title>HACKPACK | Smart Estimator</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
-    }
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background: url('3.gif') no-repeat center center fixed;
-      background-size: cover;
-      color: #c9d1d9;
       margin: 0;
       padding: 0;
     }
-    header {
-      background: rgba(22, 27, 34, 0.9);
-      padding: 1em;
+
+    body {
+      font-family: 'Rubik', sans-serif;
+      background-color: #0a0a0f;
+      color: #e0e0e0;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: #12121b;
+      border-right: 1px solid #2c2c3b;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      color: #58a6ff;
       text-align: center;
-      border-bottom: 2px solid #30363d;
+      margin-bottom: 30px;
     }
-    header img {
-      max-height: 100px;
-      margin: 0 10px;
+
+    .sidebar ul {
+      list-style: none;
     }
-    main {
+
+    .sidebar ul li {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background-color: #1e1e2b;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .sidebar ul li:hover {
+      background-color: #2f2f44;
+      transform: translateX(5px);
+    }
+
+    .sidebar ul li a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #161623 0%, #0d0d15 100%);
+    }
+
+    .header {
+      flex-shrink: 0;
+      height: 500px;
+      background-image: url('2.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #000;
+      border-bottom: 2px solid #0ff;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+    }
+
+    .content {
+      overflow-y: auto;
+      padding: 40px;
+      flex-grow: 1;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: #0ff;
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    form {
       max-width: 600px;
-      margin: 2em auto;
-      padding: 2em;
-      background: rgba(22, 27, 34, 0.95);
-      border-radius: 12px;
-      box-shadow: 0 0 12px #0ff;
+      margin: 0 auto;
     }
+
     label {
       display: block;
-      margin-top: 1.5em;
-      font-size: 0.95em;
+      margin-top: 1em;
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 0.75em;
       margin-top: 0.4em;
       border: 1px solid #30363d;
-      border-radius: 6px;
-      background: #0d1117;
-      color: #c9d1d9;
+      border-radius: 8px;
+      background: #0f111a;
+      color: #d6e0f0;
       font-size: 1em;
     }
-    input:focus, select:focus {
-      border-color: #58a6ff;
-      outline: none;
-    }
+
     button {
       margin-top: 2em;
       padding: 0.9em;
       width: 100%;
       background: linear-gradient(90deg, #0ff, #58a6ff);
-      color: #0d1117;
+      color: #000;
       border: none;
-      border-radius: 6px;
-      font-size: 1em;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease-in-out;
     }
-    button:hover {
-      background: linear-gradient(90deg, #58a6ff, #0ff);
-    }
+
     .result {
       margin-top: 2em;
       font-size: 1.2em;
-      font-weight: bold;
       color: #39ff14;
       text-align: center;
     }
+
     #map {
       height: 400px;
-      border-radius: 12px;
       margin-top: 2em;
+      border-radius: 12px;
     }
+
     footer {
       text-align: center;
-      margin-top: 2em;
+      margin-top: 3em;
       padding: 1em;
       font-size: 0.85em;
-      color: #8b949e;
-      background: rgba(22, 27, 34, 0.8);
+      color: #7f8c99;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="header1.gif" alt="Header GIF 1" />
-    <img src="header2.gif" alt="Header GIF 2" />
-  </header>
-  <main>
-    <form id="estimatorForm">
-      <label>City:<input type="text" id="city" required></label>
-      <label>District:<input type="text" id="district" required></label>
-      <label>Property Type:
-        <select id="type">
-          <option value="apartment">Apartment</option>
-          <option value="house">House</option>
-        </select>
-      </label>
-      <label>Size (m²):<input type="number" id="size" required></label>
-      <label>Floor:<input type="number" id="floor"></label>
-      <label>Year Built:<input type="number" id="year"></label>
-      <label>Condition:
-        <select id="condition">
-          <option value="renovated">Renovated</option>
-          <option value="not-renovated">Not Renovated</option>
-        </select>
-      </label>
-      <button type="submit">Estimate Value</button>
-    </form>
-    <div id="map"></div>
-    <div class="result" id="result"></div>
+  <div class="sidebar">
+    <h2>HACKPACK</h2>
+    <ul>
+      <li>Главная</li>
+      <li>О нас</li>
+      <li>Контакты</li>
+      <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
+    </ul>
+  </div>
 
-    <!-- ВСТАВКА TON кнопки -->
-    <div style="text-align:center; margin-top: 2em;">
-      <button id="pay-ton">Оплатить 2 TON через TON Wallet</button>
-      <div id="payment-status" class="result"></div>
+  <div class="main">
+    <div class="header"></div>
+
+    <div class="content">
+      <h1>Smart Property Estimator</h1>
+      <form id="estimatorForm">
+        <label for="city">Город:
+          <input type="text" id="city" name="city" required />
+        </label>
+        <label for="district">Район:
+          <input type="text" id="district" name="district" required />
+        </label>
+        <label for="type">Тип недвижимости:
+          <select id="type" name="type">
+            <option value="apartment">Квартира</option>
+            <option value="house">Дом</option>
+          </select>
+        </label>
+        <label for="size">Площадь (м²):
+          <input type="number" id="size" name="size" min="0" required />
+        </label>
+        <label for="floor">Этаж:
+          <input type="number" id="floor" name="floor" min="0" />
+        </label>
+        <label for="year">Год постройки:
+          <input type="number" id="year" name="year" min="1800" max="2099" />
+        </label>
+        <label for="condition">Состояние:
+          <select id="condition" name="condition">
+            <option value="renovated">Отремонтировано</option>
+            <option value="not-renovated">Без ремонта</option>
+          </select>
+        </label>
+        <button type="submit">Оценить</button>
+      </form>
+
+      <div id="map"></div>
+      <div class="result" id="result"></div>
+      <footer>&copy; 2025 HACKPACK | Smart Estimator</footer>
     </div>
-  </main>
-  <footer>
-    &copy; 2025 Smart Property Estimator. All rights reserved.
-  </footer>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    document.getElementById('estimatorForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const size = parseFloat(document.getElementById('size').value);
-      const type = document.getElementById('type').value;
-      const condition = document.getElementById('condition').value;
-      const year = parseInt(document.getElementById('year').value);
+    let map = L.map('map').setView([55.751244, 37.618423], 13);
 
-      let basePricePerSqM = 1200;
-      if (type === 'house') basePricePerSqM = 1000;
-      if (condition === 'renovated') basePricePerSqM += 200;
-      if (year && year > 2015) basePricePerSqM += 100;
-
-      const estimatedPrice = basePricePerSqM * size;
-      document.getElementById('result').textContent = `Estimated Value: $${estimatedPrice.toLocaleString()}`;
+    // Спутниковый слой от Esri
+    const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Esri, Maxar, Earthstar Geographics',
     });
 
-    const map = L.map('map').setView([41.7151, 44.8271], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-  </script>
+    // Уличный слой от OpenStreetMap
+    const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
 
-  <!-- TON Connect UI SDK -->
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const connector = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react/tonconnect-manifest.json',
-        buttonRootId: 'pay-ton'
-      });
+    // По умолчанию спутник
+    esriSat.addTo(map);
 
-      const payButton = document.getElementById('pay-ton');
-      const statusDiv = document.getElementById('payment-status');
+    // Слои переключения
+    const baseMaps = {
+      "Спутник": esriSat,
+      "Улицы": osmStreets
+    };
+    L.control.layers(baseMaps).addTo(map);
 
-      payButton.addEventListener('click', async () => {
-        try {
-          const connectedWallet = await connector.connectWallet();
-          if (!connectedWallet) {
-            statusDiv.textContent = "❌ Кошелек не подключен.";
-            return;
-          }
+    let marker; // Глобальный маркер
 
-          const tx = {
-            validUntil: Math.floor(Date.now() / 1000) + 600,
-            messages: [
-              {
-                address: "UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr",
-                amount: (2 * 1e9).toString()
-              }
-            ]
-          };
+    document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      
+      const city = document.getElementById('city').value.trim();
+      const district = document.getElementById('district').value.trim();
+      const address = `${district}, ${city}`;
 
-          await connector.sendTransaction(tx);
-          statusDiv.textContent = "✅ Оплата успешно отправлена!";
-        } catch (err) {
-          statusDiv.textContent = "❌ Ошибка или отмена пользователем.";
-          console.error(err);
+      // Геокодирование через Nominatim
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+
+          map.setView([lat, lon], 15);
+
+          // Удаление старого маркера
+          if (marker) map.removeLayer(marker);
+
+          marker = L.marker([lat, lon]).addTo(map)
+            .bindPopup(`Местоположение: ${address}`)
+            .openPopup();
+        } else {
+          alert('Адрес не найден. Попробуйте ввести другие данные.');
         }
-      });
+      } catch (error) {
+        alert('Ошибка при определении местоположения.');
+        console.error(error);
+      }
+
+      // Расчёт стоимости (простой пример)
+      const size = parseFloat(document.getElementById('size').value);
+      const result = size * 1000;
+      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
     });
   </script>
 </body>
