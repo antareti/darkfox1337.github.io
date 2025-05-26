@@ -210,5 +210,21 @@
       // Продолжение геокодирования и оценки...
     });
   </script>
-</body>
+</body><audio id="clickSound" src="2.mp3" preload="auto"></audio>
+<script>document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  // Воспроизведение звука
+  const sound = document.getElementById('clickSound');
+  sound.currentTime = 0;
+  sound.play();
+
+  // Здесь логика обработки формы
+  const city = document.getElementById('city').value;
+  const size = parseFloat(document.getElementById('size').value);
+  const result = document.getElementById('result');
+  const estimate = Math.round(1000 * size + Math.random() * 10000);
+  result.textContent = `Оценочная стоимость недвижимости в ${city}: ~${estimate.toLocaleString()} $`;
+});
+
 </html>
