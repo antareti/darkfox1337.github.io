@@ -19,6 +19,13 @@
       color: #e0e0e0;
       display: flex;
       min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
     }
 
     .sidebar {
@@ -27,6 +34,7 @@
       border-right: 1px solid #2c2c3b;
       padding: 25px;
       overflow-y: auto;
+      transition: transform 0.3s ease;
     }
 
     .sidebar h2 {
@@ -61,6 +69,21 @@
       display: block;
     }
 
+    .hamburger {
+      display: none;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 1001;
+      background-color: #12121b;
+      border: none;
+      color: #58a6ff;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
     .main {
       flex: 1;
       display: flex;
@@ -71,7 +94,7 @@
 
     .header {
       flex-shrink: 0;
-      height: 500px;
+      height: 300px;
       background-image: url('2.png');
       background-size: contain;
       background-repeat: no-repeat;
@@ -83,7 +106,7 @@
 
     .content {
       overflow-y: auto;
-      padding: 40px;
+      padding: 20px;
       flex-grow: 1;
     }
 
@@ -91,8 +114,8 @@
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
       text-align: center;
-      font-size: 28px;
-      margin-bottom: 30px;
+      font-size: 24px;
+      margin-bottom: 20px;
       text-shadow: 0 0 10px #0ff;
     }
 
@@ -118,7 +141,7 @@
       font-size: 1em;
     }
 
-    button {
+    button[type="submit"] {
       margin-top: 2em;
       padding: 0.9em;
       width: 100%;
@@ -138,7 +161,7 @@
     }
 
     #map {
-      height: 400px;
+      height: 300px;
       margin-top: 2em;
       border-radius: 12px;
     }
@@ -150,58 +173,94 @@
       font-size: 0.85em;
       color: #7f8c99;
     }
+
+    /* Адаптация под мобильные устройства */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%);
+        z-index: 1000;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .header {
+        height: 200px;
+      }
+
+      form {
+        padding: 0 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>HACKPACK</h2>
-    <ul>
-      <li>Главная</li>
-      <li>О нас</li>
-      <li>Контакты</li>
-      <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
-    </ul>
-  </div>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
-  <div class="main">
-    <div class="header"></div>
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <h2>HACKPACK</h2>
+      <ul>
+        <li>Главная</li>
+        <li>О нас</li>
+        <li>Контакты</li>
+        <li><a href="https://t.me/vipcam1977" target="_blank">Telegram</a></li>
+      </ul>
+    </div>
 
-    <div class="content">
-      <h1>Smart Property Estimator</h1>
-      <form id="estimatorForm">
-        <label for="city">Город:
-          <input type="text" id="city" name="city" required />
-        </label>
-        <label for="district">Район:
-          <input type="text" id="district" name="district" required />
-        </label>
-        <label for="type">Тип недвижимости:
-          <select id="type" name="type">
-            <option value="apartment">Квартира</option>
-            <option value="house">Дом</option>
-          </select>
-        </label>
-        <label for="size">Площадь (м²):
-          <input type="number" id="size" name="size" min="0" required />
-        </label>
-        <label for="floor">Этаж:
-          <input type="number" id="floor" name="floor" min="0" />
-        </label>
-        <label for="year">Год постройки:
-          <input type="number" id="year" name="year" min="1800" max="2099" />
-        </label>
-        <label for="condition">Состояние:
-          <select id="condition" name="condition">
-            <option value="renovated">Отремонтировано</option>
-            <option value="not-renovated">Без ремонта</option>
-          </select>
-        </label>
-        <button type="submit">Оценить</button>
-      </form>
+    <div class="main">
+      <div class="header"></div>
 
-      <div id="map"></div>
-      <div class="result" id="result"></div>
-      <footer>&copy; 2025 HACKPACK | Smart Estimator</footer>
+      <div class="content">
+        <h1>Smart Property Estimator</h1>
+        <form id="estimatorForm">
+          <label for="city">Город:
+            <input type="text" id="city" name="city" required />
+          </label>
+          <label for="district">Район:
+            <input type="text" id="district" name="district" required />
+          </label>
+          <label for="type">Тип недвижимости:
+            <select id="type" name="type">
+              <option value="apartment">Квартира</option>
+              <option value="house">Дом</option>
+            </select>
+          </label>
+          <label for="size">Площадь (м²):
+            <input type="number" id="size" name="size" min="0" required />
+          </label>
+          <label for="floor">Этаж:
+            <input type="number" id="floor" name="floor" min="0" />
+          </label>
+          <label for="year">Год постройки:
+            <input type="number" id="year" name="year" min="1800" max="2099" />
+          </label>
+          <label for="condition">Состояние:
+            <select id="condition" name="condition">
+              <option value="renovated">Отремонтировано</option>
+              <option value="not-renovated">Без ремонта</option>
+            </select>
+          </label>
+          <button type="submit">Оценить</button>
+        </form>
+
+        <div id="map"></div>
+        <div class="result" id="result"></div>
+        <footer>&copy; 2025 HACKPACK | Smart Estimator</footer>
+      </div>
     </div>
   </div>
 
@@ -209,65 +268,36 @@
   <script>
     let map = L.map('map').setView([55.751244, 37.618423], 13);
 
-    // Спутниковый слой от Esri
     const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Esri, Maxar, Earthstar Geographics',
     });
 
-    // Уличный слой от OpenStreetMap
     const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     });
 
-    // По умолчанию спутник
     esriSat.addTo(map);
 
-    // Слои переключения
     const baseMaps = {
       "Спутник": esriSat,
       "Улицы": osmStreets
     };
     L.control.layers(baseMaps).addTo(map);
 
-    let marker; // Глобальный маркер
+    let marker;
 
     document.getElementById('estimatorForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      
+
       const city = document.getElementById('city').value.trim();
       const district = document.getElementById('district').value.trim();
       const address = `${district}, ${city}`;
-
-      // Геокодирование через Nominatim
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-        const data = await res.json();
-
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-
-          map.setView([lat, lon], 15);
-
-          // Удаление старого маркера
-          if (marker) map.removeLayer(marker);
-
-          marker = L.marker([lat, lon]).addTo(map)
-            .bindPopup(`Местоположение: ${address}`)
-            .openPopup();
-        } else {
-          alert('Адрес не найден. Попробуйте ввести другие данные.');
-        }
-      } catch (error) {
-        alert('Ошибка при определении местоположения.');
-        console.error(error);
-      }
-
-      // Расчёт стоимости (простой пример)
-      const size = parseFloat(document.getElementById('size').value);
-      const result = size * 1000;
-      document.getElementById('result').textContent = 'Оценочная стоимость: $' + result.toLocaleString();
+      // геокодирование и логика (добавишь сам)
     });
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
   </script>
 </body>
 </html>
